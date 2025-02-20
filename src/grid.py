@@ -2,8 +2,8 @@ import random
 
 class Grid:
     """Representerar spelplanen. Du kan ändra standardstorleken och tecknen för olika rutor. """
-    width = 36
-    height = 12
+    width = 36 # x  == 18
+    height = 12 # y == 6
     empty = "."  # Tecken för en tom ruta
     wall = "■"   # Tecken för en ogenomtränglig vägg
 
@@ -41,6 +41,10 @@ class Grid:
                     xs += str(row[x])
             xs += "\n"
         return xs
+
+    def get_center_pos(self):         # spelaren ska börja nära mitten av rummet.
+        return [self.width / 2, self.height / 2]
+    #   return [18, 6]
 
 
     def make_walls(self):
