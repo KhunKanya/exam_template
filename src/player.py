@@ -4,6 +4,7 @@ class Player:
     def __init__(self, x, y):
         self.pos_x = int(x)
         self.pos_y = int(y)
+        self.inventory = []
 
     # Flyttar spelaren. "dx" och "dy" är skillnaden
     def move(self, dx, dy):
@@ -14,8 +15,27 @@ class Player:
         self.pos_y += dy
 
     def can_move(self, x, y, grid):
-        return True
-        #TODO: returnera True om det inte står något i vägen
+        # Fix for version 1-C Man ska inte kunna gå igenom väggar.
+        if grid.get(self.pos_x + x, self.pos_y + y) == grid.wall:
+            return False
+        else:
+            return True
+
+    # Fix version 1-E, F Inventory - alla saker som man plockar upp ska sparas i en lista
+    def add_item(self, item):
+        self.inventory.append(item)
+
+    def print_inventory(self):
+        retlist = []
+        for item in self.inventory:
+            retlist.append(item.name)
+        retstring = ",".join(retlist)
+        return retstring
+
+
+
+
+
 
 
 
