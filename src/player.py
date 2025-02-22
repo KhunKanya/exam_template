@@ -29,7 +29,7 @@ class Player:
         retlist = []
         for item in self.inventory:
             retlist.append(item.name)
-        retstring = ",".join(retlist)
+        retstring = ", ".join(retlist)
         return retstring
 
 

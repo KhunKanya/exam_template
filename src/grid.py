@@ -13,6 +13,12 @@ class Grid:
         self.data = [[self.empty for y in range(self.width)] for z in range(
             self.height)]
 
+    # Moved from game.py as requested
+    def print_status(self, score):
+        """Visa spelvärlden och antal poäng."""
+        print("--------------------------------------")
+        print(f"You have {score} points.")
+        print(self)
 
     def get(self, x, y):
         """Hämta det som finns på en viss position"""
@@ -57,7 +63,7 @@ class Grid:
             self.set(j, 0, self.wall)
             self.set(j, self.height - 1, self.wall)
 
-    def create_random_walls(self):
+    def create_random_wall(self):
         # randomize if wall is vertical or horizontal. If even, wall will be vertical
         if random.randint(0, 100) % 2 == 0:
 
@@ -74,6 +80,8 @@ class Grid:
                     break
                 except ValueError:
                     start_pos = random.randint(2, self.height)
+                    # print("Reached the exception")
+                    break
             # Print the wall inside a loop
             for i in range(wall_length):
                 # If the wall try to do an is_empty outside the list, ignore this wall-call with the break
@@ -98,6 +106,7 @@ class Grid:
                     break
                 except ValueError:
                     start_pos = random.randint(2, self.width)
+                    break
             # Print the wall inside a loop
             for i in range(wall_length):
                 # If the wall try to do an is_empty outside the list, ignore this wall-call with the break
@@ -108,6 +117,10 @@ class Grid:
                         break
                 except IndexError:
                     break
+                
+    def create_random_walls(self, amount):
+        for _ in range(amount):
+            self.create_random_wall()
 
     # Används i filen pickups.py
     def get_random_x(self):

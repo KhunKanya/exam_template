@@ -1,7 +1,7 @@
 from .grid import Grid
 from .player import Player
 from . import pickups
-
+import os
 
 score = 0
 inventory = []
@@ -13,21 +13,17 @@ player = Player(start_center[0], start_center[1])  # X, Y
 g.set_player(player)
 g.make_walls()
 pickups.randomize(g)
-g.create_random_walls()
+g.create_random_walls(5)
 
 
-# TODO: flytta denna till en annan fil
-def print_status(game_grid):
-    """Visa spelvärlden och antal poäng."""
-    print("--------------------------------------")
-    print(f"You have {score} points.")
-    print(game_grid)
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 
 command = "a"
 # Loopa tills användaren trycker Q eller X.
 while not command.casefold() in ["q", "x"]:
-    print_status(g)
+    g.print_status(score)
 
     command = input("Use WASD to move, Q/X to quit. ")
     command = command.casefold()[:1]
@@ -42,25 +38,29 @@ while not command.casefold() in ["q", "x"]:
     if command not in ['w','a','s','d','q','x','i']:
         print("Invalid command.")
         continue
+    
+    if command in ['w', 'a', 's', 'd']:
+
+        if player.can_move(directions[command][0], directions[command][1], g):
+            maybe_item = g.get(player.pos_x + directions[command][0], player.pos_y + directions[command][1])
+            player.move(dx=directions[command][0], dy=directions[command][1])
+
+            if isinstance(maybe_item, pickups.Item):
+                # we found something
+                score += maybe_item.value
+                print(f"You found a {maybe_item.name}, +{maybe_item.value} points.")
+                player.add_item(maybe_item)
+                # g.set(player.pos_x, player.pos_y, g.empty)
+                g.clear(player.pos_x, player.pos_y)
+            else:
+                score -= 1  # fix version1 G. The floor is lava - för varje steg man går ska man tappa 1 poäng.
 
     if command == "i":
+        clear_screen()
         print(player.print_inventory())
         continue
-
-    if player.can_move(directions[command][0], directions[command][1], g):
-        maybe_item = g.get(player.pos_x + directions[command][0], player.pos_y + directions[command][1])
-        player.move(dx=directions[command][0], dy=directions[command][1])
-
-        if isinstance(maybe_item, pickups.Item):
-            # we found something
-            score += maybe_item.value
-            print(f"You found a {maybe_item.name}, +{maybe_item.value} points.")
-            player.add_item(maybe_item)
-            # g.set(player.pos_x, player.pos_y, g.empty)
-            g.clear(player.pos_x, player.pos_y)
-        else:
-            score -= 1  # fix version1 G. The floor is lava - för varje steg man går ska man tappa 1 poäng.
-
+    clear_screen()
+    
 
 # Hit kommer vi när while-loopen slutar
 print("Thank you for playing!")
