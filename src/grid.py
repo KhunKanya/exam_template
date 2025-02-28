@@ -1,4 +1,5 @@
 import random
+from . import pickups
 
 class Grid:
     """Representerar spelplanen. Du kan ändra standardstorleken och tecknen för olika rutor. """
@@ -12,6 +13,16 @@ class Grid:
         # Spelplanen lagras i en lista av listor. Vi använder "list comprehension" för att sätta tecknet för "empty" på varje plats på spelplanen.
         self.data = [[self.empty for y in range(self.width)] for z in range(
             self.height)]
+    
+    # Crate function to return all the items on the map
+    def get_items_on_map(self):
+        item_list = []
+        for x in range(self.width):
+            for y in range(self.height):
+                if isinstance(self.get(x, y), pickups.Item):
+                    item_list.append(self.get(x, y))
+        return item_list
+
 
     # Moved from game.py as requested
     def print_status(self, score):
@@ -22,7 +33,11 @@ class Grid:
 
     def get(self, x, y):
         """Hämta det som finns på en viss position"""
-        return self.data[y][x]
+        try:
+            return self.data[y][x]
+        except IndexError:
+            return None
+
 
     def set(self, x, y, value):
         """Ändra vad som finns på en viss position"""
@@ -30,6 +45,12 @@ class Grid:
 
     def set_player(self, player):
         self.player = player
+    
+    def get_width(self):
+        return self.width
+    
+    def get_height(self):
+        return self.height
 
     def clear(self, x, y):
         """Ta bort item från position"""
